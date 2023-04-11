@@ -82,6 +82,18 @@ def game():
                 break
     print("Your wage is: " + str(wage))
 
+    def display_results(condition):
+        # Display resulting wage and the wallet after the round
+        if condition == 'natural':
+            print('You win ' + str(int(wage * 1.5)) + ' and you current wallet is ' + str(wallet))
+            print('\n')
+        elif condition == 'win':
+            print('You win ' + str(wage) + ' and you current wallet is ' + str(wallet))
+            print('\n')
+        elif condition == 'lost':
+            print('You lost ' + str(wage) + ' and you current wallet is ' + str(wallet))
+            print('\n')
+
     while True:
         # Display cards
         display_cards(dealer_hand, hide_last=True)
@@ -92,25 +104,28 @@ def game():
         if hand_value(player_hand) == 21:
             if flag:
                 print('Blackjack! Natural!')
-                wallet += wage * 1.5
+                wallet += int(wage * 1.5)
+                display_results('natural')
                 break
             else:
                 print('Blackjack! You win!')
                 wallet += wage
+                display_results('win')
                 break
         flag = False
         
         # Ask player to hit or stand
         choice = input('Hit or stand? ')
-        if choice.lower() == 'hit':
+        if choice.lower() == 'hit' or choice.lower() == 'h':
             player_hand.append(deck.pop())
             # Check for bust
             if hand_value(player_hand) > 21:
                 display_cards(dealer_hand)
                 print('Bust! You lose.')
                 wallet -= wage
+                display_results('lost')
                 break
-        elif choice.lower() == 'stand':
+        elif choice.lower() == 'stand' or choice.lower() == 's':
             # Dealer's turn
             while hand_value(dealer_hand) < 17:
                 dealer_hand.append(deck.pop())
@@ -118,17 +133,20 @@ def game():
             print('Player Score: ' + str(hand_value(player_hand)) + ' Dealer Score: ' + str(hand_value(dealer_hand)))
             # Check for bust
             if hand_value(dealer_hand) > 21:
-                print('Dealer bust! You win!')
+                print('Dealer bust! You win!')                
                 wallet += wage
+                display_results('win')
                 break
             # Compare hands
             if hand_value(player_hand) > hand_value(dealer_hand):
                 print('You win!')
                 wallet += wage
+                display_results('win')
                 break
             elif hand_value(player_hand) < hand_value(dealer_hand):
                 print('You lose.')
                 wallet -= wage
+                display_results('lost')
                 break
             else:
                 print('Push.')
